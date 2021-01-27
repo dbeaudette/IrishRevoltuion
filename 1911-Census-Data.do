@@ -7,7 +7,10 @@
 **Total population: http://doi.org/10.5255/UKDA-SN-3578-1
 **Age: http://doi.org/10.5255/UKDA-SN-3574-1
 **Religion: http://doi.org/10.5255/UKDA-SN-3579-1
-**Save these into your working directory
+**Irish Language: http://doi.org/10.5255/UKDA-SN-3573-1
+**The data are protected by the UKDA end-user license agreement 
+**You'll need to access the data via the DOI's above and download thme into your working directory.
+
 
 
 **Set your working directory:
