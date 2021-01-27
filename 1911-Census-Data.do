@@ -27,7 +27,7 @@ destring year, replace
 keep if year==1911
 destring roman_catholic ch_of_ireland presbyterian methodists others, replace
 gen total= roman_catholic+ ch_of_ireland+ presbyterian+ methodists+ others
-gen newcountyid=trim(county_id)
+gen newcountyid=substr(county_id,1,4)
 collapse (sum) roman_catholic ch_of_ireland presbyterian methodists others total, by(newcountyid)
 save "1911-Religion-by-county.dta", replace
 
@@ -49,6 +49,26 @@ rename under_1 femaleunder_1
 collapse (sum) female*, by(newcountyid)
 save "1911-agestatistics-county-FEMALES.dta", replace
 
+import delimited "/Users/loaner/Dropbox/Dissertation/Book Project/Irish Revolution/Map/1911 Census/UKDA-3573-tab/tab/langcou.tab", varnames(1) clear
+gen newcountyid=substr(county_id,1,4)
+replace lang=trim(lang)
+keep if year==1911
+keep if lang=="IRISH&ENGLISH"
+rename age* lang_irishenglish_age*
+rename under* lang_irishenglish_under*
+collapse (sum) lang_*, by(newcountyid)
+save "1911-IrishLanguage-IrishEnglish.dta", replace
+
+import delimited "/Users/loaner/Dropbox/Dissertation/Book Project/Irish Revolution/Map/1911 Census/UKDA-3573-tab/tab/langcou.tab", varnames(1) clear
+gen newcountyid=substr(county_id,1,4)
+replace lang=trim(lang)
+keep if year==1911
+keep if lang=="IRISH ONLY"
+rename age* lang_irishonly_age*
+rename under* lang_irish_only_under*
+collapse (sum) lang_*, by(newcountyid)
+save "1911-IrishLanguage-IrishOnly.dta", replace
+
 ***Having trouble with the total population data. Commenting-out this code, b/c it needs some work.
 ***Specifically, Dublin City (and other cities) do not appear to be tagged separately, but also are not included in the county totals.
 *import delimited "UKDA-3578-tab/tab/poppluco.tab", varnames(1) clear
@@ -61,12 +81,21 @@ save "1911-agestatistics-county-FEMALES.dta", replace
 ***Then merge all of the individual data sets together to make the 'wide' version:
 *use "Population-PLUC.dta", clear
 
-use "1911-Religion-by-county.dta"
+use "1911-Religion-by-county.dta", clear
 merge 1:1 newcountyid using "1911-agestatistics-county-MALES.dta"
-drop if _m~=3
 drop _m
 merge 1:1 newcountyid using "1911-agestatistics-county-FEMALES.dta"
-drop if _m~=3
+drop _m
+merge 1:1 newcountyid using "1911-IrishLanguage-IrishOnly.dta"
+drop _m
+merge 1:1 newcountyid using "1911-IrishLanguage-IrishEnglish.dta"
 drop _m
 merge 1:1 newcountyid using "1911-county-codes.dta"
 drop if _m~=3
+
+replace county=trim(county)
+replace county="DERRY" if county=="LONONDERRY"
+replace county="LAOIS" if county=="QUEEN'S COUNTY"
+replace county="OFFALY" if county=="KING'S COUNTY"
+
+export delimited "1911-Census-Statistics.csv", replace
