@@ -49,7 +49,7 @@ rename under_1 femaleunder_1
 collapse (sum) female*, by(newcountyid)
 save "1911-agestatistics-county-FEMALES.dta", replace
 
-import delimited "/Users/loaner/Dropbox/Dissertation/Book Project/Irish Revolution/Map/1911 Census/UKDA-3573-tab/tab/langcou.tab", varnames(1) clear
+import delimited "UKDA-3573-tab/tab/langcou.tab", varnames(1) clear
 gen newcountyid=substr(county_id,1,4)
 replace lang=trim(lang)
 keep if year==1911
@@ -59,7 +59,7 @@ rename under* lang_irishenglish_under*
 collapse (sum) lang_*, by(newcountyid)
 save "1911-IrishLanguage-IrishEnglish.dta", replace
 
-import delimited "/Users/loaner/Dropbox/Dissertation/Book Project/Irish Revolution/Map/1911 Census/UKDA-3573-tab/tab/langcou.tab", varnames(1) clear
+import delimited "UKDA-3573-tab/tab/langcou.tab", varnames(1) clear
 gen newcountyid=substr(county_id,1,4)
 replace lang=trim(lang)
 keep if year==1911
